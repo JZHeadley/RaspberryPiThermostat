@@ -1,0 +1,27 @@
+<html>
+<head>
+    {% if title %}
+        <title>{{ title }} - jzheadley</title>
+    {% else %}
+        <title>microblog</title>
+    {% endif %}
+
+    {% include 'includes.html' %}
+</head>
+<body>
+
+{% include 'navbar.html' %}
+<br>
+<hr>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</body>
+</html>
