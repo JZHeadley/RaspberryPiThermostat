@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script>
+        function fanOn() {
+            $.post("fan/on", {}, function (result) {
+            });
+        }
+        function heatOn() {
+            $.post("heater/on", {}, function (result) {
+            });
+        }
+        function acOn() {
+            $.post("ac/on", {}, function (result) {
+            });
+        }
+        function systemOff() {
+            $.post("system/off", {}, function (result) {
+                {#                                alert(result);#}
+            });
+        }
+    </script>
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-5 col-sm-5">
@@ -15,22 +34,28 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
-                <div class="row">Auto</div>
-                <div class="row">Auto</div>
-                <div class="row">Auto</div>
-                <div class="row">Auto</div>
+                <div class="row">
+                    <button name="fan_on" id="fan_on_btn" onclick="fanOn();" type="submit">Fan On</button>
+                </div>
+                <div class="row">
+                    <button name="heat_on" id="heat_on_btn" onclick="heatOn();" type="submit">Heater On</button>
+                </div>
+                <div class="row">
+                    <button name="ac_on" id="ac_on_btn" onclick="acOn();" type="submit">A/C On</button>
+                </div>
             </div>
             <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
-                <div class="row">Auto</div>
-                <div class="row">Auto</div>
+                <div class="row">
+                    <button name="system_off" id="system_off_btn" onclick="systemOff();" type="submit">System Off
+                    </button>
+                </div>
                 <div class="row">Auto</div>
                 <div class="row">Auto</div>
             </div>
         </div>
     </div>
-
-
 
 {% endblock %}

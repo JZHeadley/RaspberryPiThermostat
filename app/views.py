@@ -4,7 +4,7 @@ from flask import render_template
 
 from app import app
 from app.models import User, users, login_manager
-from app.thermostat_controls import air_conditioning, heater, fan
+from app.thermostat_controls import air_conditioning, heater, fan, system_off
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def index():
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    return 'Logged out'
+    return flask.redirect(flask.url_for('index'))
 
 
 @login_manager.unauthorized_handler
@@ -54,19 +54,25 @@ def thermostat():
                            title='Thermostat')
 
 
-@app.route('/ac/<state>')
+@app.route('/ac/<state>', methods=['POST'])
 @flask_login.login_required
 def toggle_ac(state):
     return air_conditioning(state)
 
 
-@app.route('/fan/<state>')
+@app.route('/fan/<state>', methods=['POST'])
 @flask_login.login_required
 def toggle_fan(state):
     return fan(state)
 
 
-@app.route('/heater/<state>')
+@app.route('/heater/<state>', methods=['POST'])
 @flask_login.login_required
 def toggle_heater(state):
     return heater(state)
+
+
+@app.route('/system/off', methods=['POST'])
+@flask_login.login_required
+def turn_system_off():
+    return system_off()

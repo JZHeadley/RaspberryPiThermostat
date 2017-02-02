@@ -17,16 +17,10 @@ VERBOSE = app.config['DEBUG']
 def fan(state):
     if state == "on":
         write_verbose("fan turned on")
-        gpio.output(FAN_PIN, gpio.HIGH)
+        gpio.output(FAN_PIN, gpio.LOW)
         gpio.output(HEATER_PIN, gpio.HIGH)
         gpio.output(AC_PIN, gpio.HIGH)
         return "fan turned on"
-    elif state == "off":
-        write_verbose("fan turned off")
-        gpio.output(FAN_PIN, gpio.LOW)
-        gpio.output(HEATER_PIN, gpio.LOW)
-        gpio.output(AC_PIN, gpio.LOW)
-        return "fan turned off"
     else:
         return "invalid command"
 
@@ -34,16 +28,10 @@ def fan(state):
 def heater(state):
     if state == "on":
         write_verbose("heater turned on")
-        gpio.output(FAN_PIN, gpio.HIGH)
-        gpio.output(HEATER_PIN, gpio.HIGH)
-        gpio.output(AC_PIN, gpio.HIGH)
-        return "heater turned on"
-    elif state == "off":
-        write_verbose("heater turned off")
         gpio.output(FAN_PIN, gpio.LOW)
         gpio.output(HEATER_PIN, gpio.LOW)
-        gpio.output(AC_PIN, gpio.LOW)
-        return "heater turned off"
+        gpio.output(AC_PIN, gpio.HIGH)
+        return "heater turned on"
     else:
         return "invalid command"
 
@@ -51,18 +39,18 @@ def heater(state):
 def air_conditioning(state):
     if state == "on":
         write_verbose("ac turned on")
-        gpio.output(FAN_PIN, gpio.HIGH)
-        gpio.output(HEATER_PIN, gpio.HIGH)
-        gpio.output(AC_PIN, gpio.HIGH)
-        return "ac turned on"
-    elif state == "off":
-        write_verbose("ac turned off")
         gpio.output(FAN_PIN, gpio.LOW)
         gpio.output(HEATER_PIN, gpio.LOW)
         gpio.output(AC_PIN, gpio.LOW)
-        return "ac turned off"
+        return "ac turned on"
     else:
         return "invalid command"
+
+
+def system_off():
+    write_verbose("System has been turned off")
+    turn_off_system()
+    return "System has been turned off"
 
 
 def init_gpio():
@@ -75,6 +63,12 @@ def init_gpio():
     gpio.setup(AC_PIN, gpio.OUT)
 
     write_verbose('GPIO setup completed.')
+
+
+def turn_off_system():
+    gpio.output(FAN_PIN, gpio.HIGH)
+    gpio.output(HEATER_PIN, gpio.HIGH)
+    gpio.output(AC_PIN, gpio.HIGH)
 
 
 def get_heater_status():
