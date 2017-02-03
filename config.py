@@ -8,5 +8,8 @@ FAN_PIN = 17
 HEATER_PIN = 27
 AC_PIN = 22
 
+TARGET_TEMP = 72
+TARGET_MODE = "heating"
+
 USERNAME = "jzheadley"
 PASSWORD = "Welcome123!"

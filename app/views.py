@@ -2,9 +2,11 @@ import flask
 import flask_login
 from flask import render_template
 
+from GetTemperature import read_temp
 from app import app
 from app.models import User, users, login_manager
 from app.thermostat_controls import air_conditioning, heater, fan, system_off
+from run import TARGET_TEMP, TARGET_MODE
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -76,3 +78,26 @@ def toggle_heater(state):
 @flask_login.login_required
 def turn_system_off():
     return system_off()
+
+
+@app.route('/temp/target')
+def target_temp_view():
+    if flask.request.method == 'GET':
+        return TARGET_TEMP
+    elif flask.request.method == 'POST':
+        # TODO: add this logic
+        return
+
+
+@app.route('/mode')
+def target_temp_mode():
+    if flask.request.method == 'GET':
+        return TARGET_MODE
+    elif flask.request.method == 'POST':
+        # TODO: set the mode based on the post request
+        return
+
+
+@app.route('/temp/current')
+def get_temp():
+    return read_temp()
