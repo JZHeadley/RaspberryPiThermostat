@@ -1,5 +1,3 @@
-import subprocess
-
 import RPi.GPIO as gpio
 
 from app import app
@@ -15,6 +13,14 @@ VERBOSE = app.config['DEBUG']
 
 
 def fan(state):
+    """
+
+    Args:
+        state: state for the fan pin to be set to.
+
+    Returns: a confirmation that the fan has changed
+
+    """
     if state == "on":
         write_verbose("fan turned on")
         gpio.output(FAN_PIN, gpio.LOW)
@@ -26,6 +32,14 @@ def fan(state):
 
 
 def heater(state):
+    """
+
+    Args:
+        state: state for the heater pin to be set to.
+
+    Returns: a confirmation that the heater has changed
+
+    """
     if state == "on":
         write_verbose("heater turned on")
         gpio.output(FAN_PIN, gpio.LOW)
@@ -37,6 +51,14 @@ def heater(state):
 
 
 def air_conditioning(state):
+    """
+
+    Args:
+        state: state for the a/c pin to be set to.
+
+    Returns: a confirmation that the a/c has changed
+
+    """
     if state == "on":
         write_verbose("ac turned on")
         gpio.output(FAN_PIN, gpio.LOW)
@@ -48,12 +70,20 @@ def air_conditioning(state):
 
 
 def system_off():
+    """
+
+    Returns: a confirmation that the system has been turned off
+
+    """
     write_verbose("System has been turned off")
     turn_off_system()
     return "System has been turned off"
 
 
 def init_gpio():
+    """
+        Initializes the gpio pins for the RaspberryPi
+    """
     write_verbose('Setting up GPIO...')
     gpio.setwarnings(False)
     gpio.setmode(BOARD_MODE)
@@ -66,27 +96,21 @@ def init_gpio():
 
 
 def turn_off_system():
+    """
+        Turns off all of the pins so the system will stop
+    """
     gpio.output(FAN_PIN, gpio.HIGH)
     gpio.output(HEATER_PIN, gpio.HIGH)
     gpio.output(AC_PIN, gpio.HIGH)
 
 
-def get_heater_status():
-    return int(subprocess.Popen("cat /sys/class/gpio/gpio" + str(HEATER_PIN) + "/value", shell=True,
-                                stdout=subprocess.PIPE).stdout.read().strip())
-
-
-def get_ac_status():
-    return int(subprocess.Popen("cat /sys/class/gpio/gpio" + str(AC_PIN) + "/value", shell=True,
-                                stdout=subprocess.PIPE).stdout.read().strip())
-
-
-def get_fan_status():
-    return int(subprocess.Popen("cat /sys/class/gpio/gpio" + str(FAN_PIN) + "/value", shell=True,
-                                stdout=subprocess.PIPE).stdout.read().strip())
-
-
 def write_verbose(s, new_line=False):
+    """
+        helper method to only write certain things while in debug mode
+    Args:
+        s: a string to write
+        new_line: whether or not to print the string on a new line
+    """
     if VERBOSE:
         print(s)
         if new_line is True:

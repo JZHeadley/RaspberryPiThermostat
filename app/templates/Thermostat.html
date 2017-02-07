@@ -2,23 +2,12 @@
 
 {% block content %}
     <script>
-        function fanOn() {
-            $.post("fan/on", {}, function (result) {
-            });
+        function setMode(mode) {
+            $.post("mode/" + mode, function (result) {
+                $.notify(result, ['clickToHide: true', 'autoHide: true', 'autoHideDelay: 5000'])
+            })
         }
-        function heatOn() {
-            $.post("heater/on", {}, function (result) {
-            });
-        }
-        function acOn() {
-            $.post("ac/on", {}, function (result) {
-            });
-        }
-        function systemOff() {
-            $.post("system/off", {}, function (result) {
-                {#                                alert(result);#}
-            });
-        }
+
     </script>
     <div class="container">
         <div class="row">
@@ -34,8 +23,14 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
+            <button name="heat_mode" id="heat_mode_btn" onclick="setMode('heat');" type="submit">Heat Mode</button>
+            <button name="cool_mode" id="cool_mode_btn" onclick="setMode('cool');" type="submit">Cool Mode</button>
+            <button name="system_off" id="system_off_btn" onclick="setMode('off');" type="submit">Off</button>
+        </div>
+
+
+        <div class="row" hidden>
             <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
                 <div class="row">
                     <button name="fan_on" id="fan_on_btn" onclick="fanOn();" type="submit">Fan On</button>
