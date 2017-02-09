@@ -1,11 +1,12 @@
 import flask
 import flask_login
+from flask import json
 from flask import render_template
 
 from GetTemperature import read_temp
 from app import app
 from app.models import User, users, login_manager
-from app.thermostat_controls import system_off
+from app.thermostat_controls import system_off, write_verbose
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,8 +104,9 @@ def target_temp_view():
     Returns: current target temp
 
     """
-    # TODO: return current target temp here.  read from json file
-    return
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
+    return data['TARGET_TEMP']
 
 
 @app.route('/temp/target/<target_temp>', methods=['POST'])
@@ -117,9 +119,20 @@ def target_temp_set(target_temp):
     Returns: a message confirming temp has been set
 
     """
-    # else:
-    #     return "that was an invalid operation.  Stop trying to hack my thermometer!"
-    # TODO: set the target temp in a json file here
+
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
+    if target_temp < 60:
+        return "That is way too cold."
+    elif target_temp > 85:
+        return "That is way too hot!"
+    elif target_temp < 85 & target_temp > 60:  # valid range of temps is between 60 and 85.
+        data['TARGET_TEMP'] = target_temp
+    else:
+        return "That was an invalid operation.  Stop trying to hack my thermometer!"
+
+    with open('settings.json', 'w') as f:
+        json.dump(data, f)
     return "new temp, " + target_temp + " has been set."
 
 
@@ -130,8 +143,9 @@ def target_temp_mode():
     Returns: the current mode that should be used to reach the target
 
     """
-    # TODO: get the current mode from the json file here
-    return
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
+    return data['TARGET_MODE']
 
 
 @app.route('/mode/<mode>', methods=['POST'])
@@ -144,19 +158,21 @@ def target_temp_mode_set(mode):
     Returns: a message confirming mode has been set
 
     """
-    print mode
-    # TODO: set the target mode in the json file here
-
+    write_verbose("Mode has been changed to " + mode)
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
+    write_verbose(data)
     if mode == 'cool':
-        return
+        data['TARGET_MODE'] = 'cool'
     elif mode == 'heat':
-        return
+        data['TARGET_MODE'] = 'heat'
     elif mode == 'off':
-        return
+        data['TARGET_MODE'] = 'off'
     else:
         return "that was an invalid operation.  Stop trying to hack my thermometer!"
-
-        # return "new mode, " + mode + " has been set."
+    with open('settings.json', 'w') as f:
+        json.dump(data, f)
+    return "new mode, " + mode + " has been set."
 
 
 @app.route('/temp/current')

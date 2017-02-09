@@ -1,9 +1,7 @@
-import os
-
 import time
 
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+# os.system('modprobe w1-gpio')
+# os.system('modprobe w1-therm')
 
 base_dir = '/sys/bus/w1/decides/'
 # device_folder = glob.glob(base_dir + '28*')[0]
@@ -28,7 +26,7 @@ def read_temp():
         temp_string = lines[1][equals_pos + 2:]
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32
-        return temp_f
+        return str(temp_f)
 
 
 if __name__ == "__main__":

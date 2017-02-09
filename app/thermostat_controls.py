@@ -9,7 +9,6 @@ RELAY_ON = False
 RELAY_OFF = (not RELAY_ON)
 
 BOARD_MODE = gpio.BCM
-VERBOSE = app.config['DEBUG']
 
 
 def fan(state):
@@ -85,7 +84,7 @@ def init_gpio():
         Initializes the gpio pins for the RaspberryPi
     """
     write_verbose('Setting up GPIO...')
-    gpio.setwarnings(False)
+    gpio.setwarnings(True)
     gpio.setmode(BOARD_MODE)
 
     gpio.setup(FAN_PIN, gpio.OUT)
@@ -111,7 +110,7 @@ def write_verbose(s, new_line=False):
         s: a string to write
         new_line: whether or not to print the string on a new line
     """
-    if VERBOSE:
+    if app.config['DEBUG']:
         print(s)
         if new_line is True:
             print('')
