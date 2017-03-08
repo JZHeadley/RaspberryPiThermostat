@@ -7,19 +7,43 @@
                 $.notify(result, ['clickToHide: true', 'autoHide: true', 'autoHideDelay: 5000'])
             })
         }
+        function changeTemp(num) {
+            console.log(num);
+            var input = $("#target_temp");
+            var counter = parseInt(input.val());
+            counter += num;
+            input.val(counter);
+            if (isNaN(input.val())) {
+                sessionStorage.reloadAfterPageLoad = true;
+                window.location.reload();
 
+            } else {
+                $.post('temp/target', $("#targetTempForm").serialize(), function (result) {
+                    console.log("new temp is " + counter);
+                    $.notify(result, ['clickToHide: true', 'autoHide: true', 'autoHideDelay: 5000'])
+                });
+            }
+        }
+        $(function () {
+            if (sessionStorage.reloadAfterPageLoad) {
+                $.notify("Refreshed the page, you did something wrong", ['clickToHide: true', 'autoHide: true', 'autoHideDelay: 5000']);
+            }
+        })
     </script>
     <div class="container">
         <div class="row">
             <div class="col-md-5 col-lg-5 col-sm-5">
                 <div class="row">
-                    <a><i class="fa fa-arrow-up fa-3x top" aria-hidden="true"></i></a>
+                    <a><i class="fa fa-arrow-up fa-3x top" onclick="changeTemp(1)" aria-hidden="true"></i></a>
                 </div>
                 <div class="row center-block">
-                    74
+                    <form id="targetTempForm" action="temp/target" method="post">
+                        <input title="TargetTemp" id="target_temp" type="text" value="{{ current_target }}"
+                               name="target_temp"/>
+                    </form>
                 </div>
                 <div class="row">
-                    <a><i class="fa fa-arrow-down fa-3x top" aria-hidden="true"></i></a>
+                    <a><i class="fa fa-arrow-down fa-3x top" onclick="changeTemp(-1)" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
@@ -28,29 +52,5 @@
             <button name="cool_mode" id="cool_mode_btn" onclick="setMode('cool');" type="submit">Cool Mode</button>
             <button name="system_off" id="system_off_btn" onclick="setMode('off');" type="submit">Off</button>
         </div>
-
-
-        <div class="row" hidden>
-            <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
-                <div class="row">
-                    <button name="fan_on" id="fan_on_btn" onclick="fanOn();" type="submit">Fan On</button>
-                </div>
-                <div class="row">
-                    <button name="heat_on" id="heat_on_btn" onclick="heatOn();" type="submit">Heater On</button>
-                </div>
-                <div class="row">
-                    <button name="ac_on" id="ac_on_btn" onclick="acOn();" type="submit">A/C On</button>
-                </div>
-            </div>
-            <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
-                <div class="row">
-                    <button name="system_off" id="system_off_btn" onclick="systemOff();" type="submit">System Off
-                    </button>
-                </div>
-                <div class="row">Auto</div>
-                <div class="row">Auto</div>
-            </div>
-        </div>
     </div>
-
 {% endblock %}

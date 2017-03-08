@@ -6,7 +6,7 @@ from flask import render_template
 from GetTemperature import read_temp
 from app import app
 from app.models import User, users, login_manager
-from app.thermostat_controls import system_off, write_verbose
+from thermostat_controls import system_off, write_verbose
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -82,8 +82,11 @@ def thermostat():
     Returns: the thermostat view
 
     """
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
     return render_template('Thermostat.html',
-                           title='Thermostat')
+                           title='Thermostat',
+                           current_target=data['TARGET_TEMP'])
 
 
 @app.route('/system/off', methods=['POST'])
@@ -109,31 +112,29 @@ def target_temp_view():
     return data['TARGET_TEMP']
 
 
-@app.route('/temp/target/<target_temp>', methods=['POST'])
-def target_temp_set(target_temp):
+@app.route('/temp/target', methods=['POST'])
+def target_temp_set():
     """
-
-    Args:
-        target_temp: the target temp you want to reach
 
     Returns: a message confirming temp has been set
 
     """
+    target_temp = int(flask.request.form['target_temp'])
 
     with open('settings.json', 'r') as f:
         data = json.load(f)
-    if target_temp < 60:
+    if int(60) > target_temp:
         return "That is way too cold."
-    elif target_temp > 85:
+    elif 85 < target_temp:
         return "That is way too hot!"
-    elif target_temp < 85 & target_temp > 60:  # valid range of temps is between 60 and 85.
+    elif (target_temp <= int(85)) and (target_temp >= int(60)):  # valid range of temps is between 60 and 85.
         data['TARGET_TEMP'] = target_temp
     else:
         return "That was an invalid operation.  Stop trying to hack my thermometer!"
 
     with open('settings.json', 'w') as f:
         json.dump(data, f)
-    return "new temp, " + target_temp + " has been set."
+    return "new temp, " + str(target_temp) + " has been set."
 
 
 @app.route('/mode')
